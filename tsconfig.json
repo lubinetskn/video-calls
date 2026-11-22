@@ -1,13 +1,1 @@
-{
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "strict": true,
-    "baseUrl": "./src",
-    "target": "ES6",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "jsx": "react-jsx",
-    "isolatedModules": true,
-    "skipLibCheck": true
-  }
-}
+{"compilerOptions":{"target":"ES2022","lib":["ES2022","DOM","DOM.Iterable"],"module":"ESNext","moduleResolution":"Bundler","jsx":"react-jsx","strict":true,"esModuleInterop":true,"skipLibCheck":true,"noEmit":true,"types":["node","vite/client"]},"include":["apps","vite.config.ts"]}
