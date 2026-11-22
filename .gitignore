@@ -1,19 +1,10 @@
-# Files and folders of OS
-.DS_Store
-Thumbs.db
-
-# Files of editor or IDE
-.idea
-*.sublime*
-.vscode
-
-# Additional files
-*.log*
 node_modules/
-src/stories
-
-# Build files
 dist/
-
-# Configuration files
-webpack.config.js
+data/
+.env
+.env.*
+!.env.example
+playwright-report/
+test-results/
+*.log
+.DS_Store

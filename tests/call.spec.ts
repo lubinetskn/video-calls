@@ -1,0 +1,37 @@
+import { test, expect } from '@playwright/test';
+test('two people connect media, chat, and reject a third participant', async ({ browser, page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('heading', {name: /Good conversations/})).toBeVisible();
+  await page.getByRole('button', {name:'Start a conversation'}).click();
+  await page.waitForURL(/\/room\//); const url = page.url();
+  await page.getByLabel('Your name').fill('Alice');
+  await page.getByRole('button', {name:'Join conversation'}).click();
+  await expect(page.getByText('Waiting for your guest…', {exact:true})).toBeVisible();
+  const guestContext = await browser.newContext({ permissions:['camera','microphone'] });
+  const guest = await guestContext.newPage();
+  await guest.goto(url); await guest.getByLabel('Your name').fill('Bob');
+  await guest.getByRole('button', {name:'Join conversation'}).click();
+  await expect(guest.getByText('Connected · Peer-to-peer media')).toBeVisible({timeout:20000});
+  await expect(page.getByText('Connected · Peer-to-peer media')).toBeVisible();
+  await expect.poll(() => guest.locator('.video-stage > video').evaluate((v: HTMLVideoElement) => v.videoWidth)).toBeGreaterThan(0);
+  await page.getByLabel('Message', {exact:true}).fill('Hello from Alice');
+  await page.getByRole('button', {name:'Send message'}).click();
+  await expect(guest.getByRole('log')).toContainText('Hello from Alice');
+  await page.getByRole('button', {name:'Mute mic',exact:true}).click();
+  await expect(page.getByRole('button', {name:'Unmute mic',exact:true})).toHaveAttribute('aria-pressed','true');
+  const third = await guestContext.newPage(); await third.goto(url); await third.getByLabel('Your name').fill('Carol');
+  await third.getByRole('button', {name:'Join conversation'}).click();
+  await expect(third.getByRole('alert')).toContainText('already has two');
+  await guest.getByRole('button', {name:'Leave call'}).click();
+  await expect(page.getByRole('status')).toContainText('Your guest left');
+  await page.screenshot({path:'test-results/call-desktop.png',fullPage:true});
+  await guestContext.close();
+});
+test('missing room and mobile landing', async ({ page }) => {
+  await page.setViewportSize({width:390,height:844}); await page.goto('/');
+  await expect(page.getByRole('button',{name:'Start a conversation'})).toBeVisible();
+  await page.screenshot({path:'test-results/landing-mobile.png',fullPage:true});
+  await page.goto('/room/abcdefghijklmnopqrstuvwx'); await page.getByLabel('Your name').fill('Alice');
+  await page.getByRole('button',{name:'Join conversation'}).click();
+  await expect(page.getByRole('alert')).toContainText('missing or has expired');
+});

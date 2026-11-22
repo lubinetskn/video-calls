@@ -1,13 +1,7 @@
-**Project build guide:**
+# Development
 
-- Clone the project repository to your computer.
+Use Node.js 22.13 or later and npm. Follow the setup and verification commands in `readme.md`.
 
-- You must have Node.js installed.
+The application lives in `apps/web` and `apps/server`. Keep server-side validation and room membership checks for every new event. Never trust a display name or socket-supplied target as authorization. Add integration tests for changed room, messaging, or signaling behavior.
 
-- Enter the command in the console ```npm install``` or ```yarn install``` and wait for all packages to be installed.
-
-- Enter the command ```npm run start``` or ```yarn run start``` to start the project locally.
-
-- To build the project, enter the command ```npm run build``` or ```yarn run build```, it will appear in the root of the directory in the folder ```dist```.
-
-**Have a question? Write to IOINITID@gmail.com**
+Commit no credentials, database files, or generated build output. Use `.env.example` to document new configuration without actual secrets.
